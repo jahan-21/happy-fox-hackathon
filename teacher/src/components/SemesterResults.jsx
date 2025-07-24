@@ -3,12 +3,90 @@ import {
   Box,
   Typography,
   Paper,
-  Grid,
   Button,
+  Grid,
+  Container,
   Divider,
-  Collapse,
 } from '@mui/material';
 
+// Grade to point mapping
+const getGradePoint = (grade) => {
+  switch (grade) {
+    case 'O': return 10;
+    case 'A+': return 9;
+    case 'A': return 8;
+    case 'B+': return 7;
+    case 'B': return 6;
+    case 'RA': return 0;
+    default: return 0;
+  }
+};
+
+// Subject credit mapping
+const getCredits = (subjectName) => {
+  const creditMap = {
+    'Mathematics I': 4,
+    'Physics': 3,
+    'Programming in C': 3,
+    'Engineering Graphics': 4,
+    'EVS': 3,
+    'Mathematics II': 4,
+    'Chemistry': 3,
+    'Data Structures': 3,
+    'Digital Logic': 3,
+    'Python Programming': 3,
+    'Mathematics III': 4,
+    'Java Programming': 3,
+    'Database Systems': 3,
+    'Computer Architecture': 3,
+    'Operating Systems': 3,
+    'Design and Analysis of Algorithms': 4,
+    'Computer Networks': 3,
+    'Web Technology': 3,
+    'Software Engineering': 3,
+    'Discrete Mathematics': 4,
+    'Machine Learning': 3,
+    'Compiler Design': 4,
+    'Cloud Computing': 3,
+    'Professional Ethics': 2,
+    'Mobile App Development': 3
+  };
+  return creditMap[subjectName] || 3;
+};
+
+// SGPA calculator
+const calculateSGPA = (subjects) => {
+  let totalCredits = 0;
+  let totalGradePoints = 0;
+
+  subjects.forEach(subject => {
+    const credits = getCredits(subject.name);
+    const gradePoint = getGradePoint(subject.grade);
+    totalCredits += credits;
+    totalGradePoints += (credits * gradePoint);
+  });
+
+  return totalCredits ? (totalGradePoints / totalCredits).toFixed(2) : 'N/A';
+};
+
+// CGPA calculator
+const calculateCGPA = (results) => {
+  let totalCredits = 0;
+  let totalGradePoints = 0;
+
+  results.forEach(sem => {
+    sem.subjects.forEach(subject => {
+      const credits = getCredits(subject.name);
+      const gradePoint = getGradePoint(subject.grade);
+      totalCredits += credits;
+      totalGradePoints += (credits * gradePoint);
+    });
+  });
+
+  return totalCredits ? (totalGradePoints / totalCredits).toFixed(2) : 'N/A';
+};
+
+// Sample student data
 const students = [
   {
     name: 'Aarav Sharma',
@@ -17,59 +95,24 @@ const students = [
       {
         sem: 'Semester 1',
         subjects: [
-          { name: 'Mathematics I', grade: 'A' },
-          { name: 'Physics', grade: 'B' },
-          { name: 'Programming in C', grade: 'A+' },
-          { name: 'Engineering Graphics', grade: 'A' },
-          { name: 'EVS', grade: 'B+' },
-        ],
-        arrears: [],
+          { name: 'Mathematics I', grade: 'O' },
+          { name: 'Physics', grade: 'A+' },
+          { name: 'Programming in C', grade: 'A' },
+          { name: 'Engineering Graphics', grade: 'B+' },
+          { name: 'EVS', grade: 'O' }
+        ]
       },
       {
         sem: 'Semester 2',
         subjects: [
-          { name: 'Mathematics II', grade: 'A+' },
-          { name: 'Chemistry', grade: 'A' },
-          { name: 'Data Structures', grade: 'B+' },
+          { name: 'Mathematics II', grade: 'A' },
+          { name: 'Chemistry', grade: 'A+' },
+          { name: 'Data Structures', grade: 'A+' },
           { name: 'Digital Logic', grade: 'A' },
-          { name: 'Python Programming', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'B+' },
-          { name: 'Java Programming', grade: 'A' },
-          { name: 'Database Systems', grade: 'A+' },
-          { name: 'Computer Architecture', grade: 'A' },
-          { name: 'Operating Systems', grade: 'RA' },
-        ],
-        arrears: ['Operating Systems'],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'A' },
-          { name: 'Computer Networks', grade: 'B+' },
-          { name: 'Web Technology', grade: 'A+' },
-          { name: 'Software Engineering', grade: 'A' },
-          { name: 'Discrete Mathematics', grade: 'RA' },
-        ],
-        arrears: ['Discrete Mathematics'],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A+' },
-          { name: 'Compiler Design', grade: 'A' },
-          { name: 'Cloud Computing', grade: 'A' },
-          { name: 'Professional Ethics', grade: 'B+' },
-          { name: 'Mobile App Development', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-    ],
+          { name: 'Python Programming', grade: 'O' }
+        ]
+      }
+    ]
   },
   {
     name: 'Kavya Iyer',
@@ -80,72 +123,141 @@ const students = [
         subjects: [
           { name: 'Mathematics I', grade: 'A+' },
           { name: 'Physics', grade: 'A' },
-          { name: 'Programming in C', grade: 'A+' },
-          { name: 'Engineering Graphics', grade: 'A+' },
-          { name: 'EVS', grade: 'A' },
-        ],
-        arrears: [],
+          { name: 'Programming in C', grade: 'B+' },
+          { name: 'Engineering Graphics', grade: 'A' },
+          { name: 'EVS', grade: 'B+' }
+        ]
       },
       {
         sem: 'Semester 2',
         subjects: [
-          { name: 'Mathematics II', grade: 'A+' },
+          { name: 'Mathematics II', grade: 'B+' },
           { name: 'Chemistry', grade: 'A' },
           { name: 'Data Structures', grade: 'A+' },
-          { name: 'Digital Logic', grade: 'A' },
-          { name: 'Python Programming', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'A' },
-          { name: 'Java Programming', grade: 'A+' },
-          { name: 'Database Systems', grade: 'A' },
-          { name: 'Computer Architecture', grade: 'A' },
-          { name: 'Operating Systems', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'A+' },
-          { name: 'Computer Networks', grade: 'A' },
-          { name: 'Web Technology', grade: 'A+' },
-          { name: 'Software Engineering', grade: 'A+' },
-          { name: 'Discrete Mathematics', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A+' },
-          { name: 'Compiler Design', grade: 'A+' },
-          { name: 'Cloud Computing', grade: 'A+' },
-          { name: 'Professional Ethics', grade: 'A' },
-          { name: 'Mobile App Development', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-    ],
+          { name: 'Digital Logic', grade: 'O' },
+          { name: 'Python Programming', grade: 'A' }
+        ]
+      }
+    ]
   },
   {
-    name: 'Rohan Patel',
+    name: 'Ritika Das',
     roll: '21IT103',
     results: [
       {
         sem: 'Semester 1',
         subjects: [
           { name: 'Mathematics I', grade: 'B+' },
-          { name: 'Physics', grade: 'A' },
+          { name: 'Physics', grade: 'B' },
+          { name: 'Programming in C', grade: 'A' },
+          { name: 'Engineering Graphics', grade: 'O' },
+          { name: 'EVS', grade: 'A' }
+        ]
+      },
+      {
+        sem: 'Semester 2',
+        subjects: [
+          { name: 'Mathematics II', grade: 'A+' },
+          { name: 'Chemistry', grade: 'A' },
+          { name: 'Data Structures', grade: 'O' },
+          { name: 'Digital Logic', grade: 'A' },
+          { name: 'Python Programming', grade: 'A' }
+        ]
+      }
+    ]
+  },
+  {
+    name: 'Vikram Raj',
+    roll: '21IT104',
+    results: [
+      {
+        sem: 'Semester 1',
+        subjects: [
+          { name: 'Mathematics I', grade: 'A' },
+          { name: 'Physics', grade: 'RA' },
           { name: 'Programming in C', grade: 'B' },
           { name: 'Engineering Graphics', grade: 'A' },
-          { name: 'EVS', grade: 'A+' },
-        ],
-        arrears: [],
+          { name: 'EVS', grade: 'B+' }
+        ]
+      },
+      {
+        sem: 'Semester 2',
+        subjects: [
+          { name: 'Mathematics II', grade: 'A+' },
+          { name: 'Chemistry', grade: 'B' },
+          { name: 'Data Structures', grade: 'B+' },
+          { name: 'Digital Logic', grade: 'A' },
+          { name: 'Python Programming', grade: 'A' }
+        ]
+      }
+    ]
+  },
+  {
+    name: 'Sneha Nair',
+    roll: '21IT105',
+    results: [
+      {
+        sem: 'Semester 1',
+        subjects: [
+          { name: 'Mathematics I', grade: 'O' },
+          { name: 'Physics', grade: 'O' },
+          { name: 'Programming in C', grade: 'O' },
+          { name: 'Engineering Graphics', grade: 'O' },
+          { name: 'EVS', grade: 'O' }
+        ]
+      },
+      {
+        sem: 'Semester 2',
+        subjects: [
+          { name: 'Mathematics II', grade: 'O' },
+          { name: 'Chemistry', grade: 'O' },
+          { name: 'Data Structures', grade: 'O' },
+          { name: 'Digital Logic', grade: 'O' },
+          { name: 'Python Programming', grade: 'O' }
+        ]
+      }
+    ]
+  },
+  {
+    name: 'Harsh Verma',
+    roll: '21IT106',
+    results: [
+      {
+        sem: 'Semester 1',
+        subjects: [
+          { name: 'Mathematics I', grade: 'B+' },
+          { name: 'Physics', grade: 'A' },
+          { name: 'Programming in C', grade: 'A+' },
+          { name: 'Engineering Graphics', grade: 'A' },
+          { name: 'EVS', grade: 'B' }
+        ]
+      },
+      {
+        sem: 'Semester 2',
+        subjects: [
+          { name: 'Mathematics II', grade: 'A' },
+          { name: 'Chemistry', grade: 'A+' },
+          { name: 'Data Structures', grade: 'B+' },
+          { name: 'Digital Logic', grade: 'A' },
+          { name: 'Python Programming', grade: 'A' }
+        ]
+      }
+    ]
+  },
+  // New students added below
+  {
+    name: 'Priya Patel',
+    roll: '21IT107',
+    results: [
+      {
+        sem: 'Semester 1',
+        subjects: [
+          { name: 'Mathematics I', grade: 'A+' },
+          { name: 'Physics', grade: 'A' },
+          { name: 'Programming in C', grade: 'B+' },
+          { name: 'Engineering Graphics', grade: 'A+' },
+          { name: 'EVS', grade: 'O' }
+        ]
       },
       {
         sem: 'Semester 2',
@@ -153,110 +265,41 @@ const students = [
           { name: 'Mathematics II', grade: 'A' },
           { name: 'Chemistry', grade: 'B+' },
           { name: 'Data Structures', grade: 'A' },
-          { name: 'Digital Logic', grade: 'B+' },
-          { name: 'Python Programming', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'B' },
-          { name: 'Java Programming', grade: 'A' },
-          { name: 'Database Systems', grade: 'B+' },
-          { name: 'Computer Architecture', grade: 'A' },
-          { name: 'Operating Systems', grade: 'RA' },
-        ],
-        arrears: ['Operating Systems'],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'B+' },
-          { name: 'Computer Networks', grade: 'A' },
-          { name: 'Web Technology', grade: 'B+' },
-          { name: 'Software Engineering', grade: 'A' },
-          { name: 'Discrete Mathematics', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A' },
-          { name: 'Compiler Design', grade: 'B+' },
-          { name: 'Cloud Computing', grade: 'A' },
-          { name: 'Professional Ethics', grade: 'A' },
-          { name: 'Mobile App Development', grade: 'B+' },
-        ],
-        arrears: [],
-      },
-    ],
+          { name: 'Digital Logic', grade: 'A+' },
+          { name: 'Python Programming', grade: 'B+' }
+        ]
+      }
+    ]
   },
   {
-    name: 'Priya Gupta',
-    roll: '21IT104',
+    name: 'Rahul Mehta',
+    roll: '21IT108',
     results: [
       {
         sem: 'Semester 1',
         subjects: [
-          { name: 'Mathematics I', grade: 'A+' },
+          { name: 'Mathematics I', grade: 'O' },
           { name: 'Physics', grade: 'A+' },
           { name: 'Programming in C', grade: 'A' },
-          { name: 'Engineering Graphics', grade: 'A+' },
-          { name: 'EVS', grade: 'A' },
-        ],
-        arrears: [],
+          { name: 'Engineering Graphics', grade: 'B' },
+          { name: 'EVS', grade: 'A+' }
+        ]
       },
       {
         sem: 'Semester 2',
         subjects: [
           { name: 'Mathematics II', grade: 'A+' },
           { name: 'Chemistry', grade: 'A' },
-          { name: 'Data Structures', grade: 'A+' },
+          { name: 'Data Structures', grade: 'B+' },
           { name: 'Digital Logic', grade: 'A' },
-          { name: 'Python Programming', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'A' },
-          { name: 'Java Programming', grade: 'A+' },
-          { name: 'Database Systems', grade: 'A' },
-          { name: 'Computer Architecture', grade: 'A+' },
-          { name: 'Operating Systems', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'A+' },
-          { name: 'Computer Networks', grade: 'A' },
-          { name: 'Web Technology', grade: 'A+' },
-          { name: 'Software Engineering', grade: 'A' },
-          { name: 'Discrete Mathematics', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A+' },
-          { name: 'Compiler Design', grade: 'A' },
-          { name: 'Cloud Computing', grade: 'A+' },
-          { name: 'Professional Ethics', grade: 'A' },
-          { name: 'Mobile App Development', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-    ],
+          { name: 'Python Programming', grade: 'O' }
+        ]
+      }
+    ]
   },
   {
-    name: 'Arjun Singh',
-    roll: '21IT105',
+    name: 'Ananya Gupta',
+    roll: '21IT109',
     results: [
       {
         sem: 'Semester 1',
@@ -264,467 +307,147 @@ const students = [
           { name: 'Mathematics I', grade: 'B' },
           { name: 'Physics', grade: 'B+' },
           { name: 'Programming in C', grade: 'A' },
-          { name: 'Engineering Graphics', grade: 'B+' },
-          { name: 'EVS', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 2',
-        subjects: [
-          { name: 'Mathematics II', grade: 'B+' },
-          { name: 'Chemistry', grade: 'A' },
-          { name: 'Data Structures', grade: 'B' },
-          { name: 'Digital Logic', grade: 'A' },
-          { name: 'Python Programming', grade: 'B+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'RA' },
-          { name: 'Java Programming', grade: 'A' },
-          { name: 'Database Systems', grade: 'B+' },
-          { name: 'Computer Architecture', grade: 'B' },
-          { name: 'Operating Systems', grade: 'A' },
-        ],
-        arrears: ['Mathematics III'],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'B+' },
-          { name: 'Computer Networks', grade: 'A' },
-          { name: 'Web Technology', grade: 'B' },
-          { name: 'Software Engineering', grade: 'A' },
-          { name: 'Discrete Mathematics', grade: 'RA' },
-        ],
-        arrears: ['Discrete Mathematics'],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A' },
-          { name: 'Compiler Design', grade: 'B+' },
-          { name: 'Cloud Computing', grade: 'A' },
-          { name: 'Professional Ethics', grade: 'B' },
-          { name: 'Mobile App Development', grade: 'A' },
-        ],
-        arrears: [],
-      },
-    ],
-  },
-  {
-    name: 'Neha Verma',
-    roll: '21IT106',
-    results: [
-      {
-        sem: 'Semester 1',
-        subjects: [
-          { name: 'Mathematics I', grade: 'A' },
-          { name: 'Physics', grade: 'A' },
-          { name: 'Programming in C', grade: 'A+' },
           { name: 'Engineering Graphics', grade: 'A' },
-          { name: 'EVS', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 2',
-        subjects: [
-          { name: 'Mathematics II', grade: 'A+' },
-          { name: 'Chemistry', grade: 'A' },
-          { name: 'Data Structures', grade: 'A' },
-          { name: 'Digital Logic', grade: 'A+' },
-          { name: 'Python Programming', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'A' },
-          { name: 'Java Programming', grade: 'A+' },
-          { name: 'Database Systems', grade: 'A' },
-          { name: 'Computer Architecture', grade: 'A+' },
-          { name: 'Operating Systems', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'A' },
-          { name: 'Computer Networks', grade: 'A+' },
-          { name: 'Web Technology', grade: 'A' },
-          { name: 'Software Engineering', grade: 'A+' },
-          { name: 'Discrete Mathematics', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A+' },
-          { name: 'Compiler Design', grade: 'A' },
-          { name: 'Cloud Computing', grade: 'A+' },
-          { name: 'Professional Ethics', grade: 'A' },
-          { name: 'Mobile App Development', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-    ],
-  },
-  {
-    name: 'Vikram Joshi',
-    roll: '21IT107',
-    results: [
-      {
-        sem: 'Semester 1',
-        subjects: [
-          { name: 'Mathematics I', grade: 'B+' },
-          { name: 'Physics', grade: 'A' },
-          { name: 'Programming in C', grade: 'B+' },
-          { name: 'Engineering Graphics', grade: 'A' },
-          { name: 'EVS', grade: 'B' },
-        ],
-        arrears: [],
+          { name: 'EVS', grade: 'B+' }
+        ]
       },
       {
         sem: 'Semester 2',
         subjects: [
           { name: 'Mathematics II', grade: 'A' },
-          { name: 'Chemistry', grade: 'B+' },
-          { name: 'Data Structures', grade: 'A' },
-          { name: 'Digital Logic', grade: 'B+' },
-          { name: 'Python Programming', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'RA' },
-          { name: 'Java Programming', grade: 'B+' },
-          { name: 'Database Systems', grade: 'A' },
-          { name: 'Computer Architecture', grade: 'B+' },
-          { name: 'Operating Systems', grade: 'A' },
-        ],
-        arrears: ['Mathematics III'],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'B+' },
-          { name: 'Computer Networks', grade: 'A' },
-          { name: 'Web Technology', grade: 'B+' },
-          { name: 'Software Engineering', grade: 'A' },
-          { name: 'Discrete Mathematics', grade: 'B' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A' },
-          { name: 'Compiler Design', grade: 'B+' },
-          { name: 'Cloud Computing', grade: 'A' },
-          { name: 'Professional Ethics', grade: 'B+' },
-          { name: 'Mobile App Development', grade: 'A' },
-        ],
-        arrears: [],
-      },
-    ],
-  },
-  {
-    name: 'Sanya Mehta',
-    roll: '21IT108',
-    results: [
-      {
-        sem: 'Semester 1',
-        subjects: [
-          { name: 'Mathematics I', grade: 'A+' },
-          { name: 'Physics', grade: 'A' },
-          { name: 'Programming in C', grade: 'A' },
-          { name: 'Engineering Graphics', grade: 'A+' },
-          { name: 'EVS', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 2',
-        subjects: [
-          { name: 'Mathematics II', grade: 'A' },
-          { name: 'Chemistry', grade: 'A' },
-          { name: 'Data Structures', grade: 'A' },
-          { name: 'Digital Logic', grade: 'B+' },
-          { name: 'Python Programming', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'A' },
-          { name: 'Java Programming', grade: 'A' },
-          { name: 'Database Systems', grade: 'A+' },
-          { name: 'Computer Architecture', grade: 'A+' },
-          { name: 'Operating Systems', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'A+' },
-          { name: 'Computer Networks', grade: 'A' },
-          { name: 'Web Technology', grade: 'A+' },
-          { name: 'Software Engineering', grade: 'A' },
-          { name: 'Discrete Mathematics', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A' },
-          { name: 'Compiler Design', grade: 'A+' },
-          { name: 'Cloud Computing', grade: 'A' },
-          { name: 'Professional Ethics', grade: 'A' },
-          { name: 'Mobile App Development', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-    ],
-  },
-
-  // New Student 2
-  {
-    name: 'Manav Desai',
-    roll: '21IT109',
-    results: [
-      {
-        sem: 'Semester 1',
-        subjects: [
-          { name: 'Mathematics I', grade: 'B+' },
-          { name: 'Physics', grade: 'A' },
-          { name: 'Programming in C', grade: 'B' },
-          { name: 'Engineering Graphics', grade: 'B+' },
-          { name: 'EVS', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 2',
-        subjects: [
-          { name: 'Mathematics II', grade: 'A' },
-          { name: 'Chemistry', grade: 'B+' },
-          { name: 'Data Structures', grade: 'A' },
+          { name: 'Chemistry', grade: 'A+' },
+          { name: 'Data Structures', grade: 'O' },
           { name: 'Digital Logic', grade: 'A' },
-          { name: 'Python Programming', grade: 'B+' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'B' },
-          { name: 'Java Programming', grade: 'A' },
-          { name: 'Database Systems', grade: 'B+' },
-          { name: 'Computer Architecture', grade: 'A' },
-          { name: 'Operating Systems', grade: 'RA' },
-        ],
-        arrears: ['Operating Systems'],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'A' },
-          { name: 'Computer Networks', grade: 'B+' },
-          { name: 'Web Technology', grade: 'A' },
-          { name: 'Software Engineering', grade: 'B' },
-          { name: 'Discrete Mathematics', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A+' },
-          { name: 'Compiler Design', grade: 'B+' },
-          { name: 'Cloud Computing', grade: 'A' },
-          { name: 'Professional Ethics', grade: 'A' },
-          { name: 'Mobile App Development', grade: 'A' },
-        ],
-        arrears: [],
-      },
-    ],
+          { name: 'Python Programming', grade: 'A+' }
+        ]
+      }
+    ]
   },
-
-  // New Student 3
   {
-    name: 'Diya Nair',
+    name: 'Arjun Singh',
     roll: '21IT110',
     results: [
       {
         sem: 'Semester 1',
         subjects: [
           { name: 'Mathematics I', grade: 'A' },
-          { name: 'Physics', grade: 'A+' },
+          { name: 'Physics', grade: 'A' },
+          { name: 'Programming in C', grade: 'B+' },
+          { name: 'Engineering Graphics', grade: 'RA' },
+          { name: 'EVS', grade: 'A+' }
+        ]
+      },
+      {
+        sem: 'Semester 2',
+        subjects: [
+          { name: 'Mathematics II', grade: 'B+' },
+          { name: 'Chemistry', grade: 'A' },
+          { name: 'Data Structures', grade: 'A' },
+          { name: 'Digital Logic', grade: 'B+' },
+          { name: 'Python Programming', grade: 'A' }
+        ]
+      }
+    ]
+  },
+  {
+    name: 'Ishita Banerjee',
+    roll: '21IT111',
+    results: [
+      {
+        sem: 'Semester 1',
+        subjects: [
+          { name: 'Mathematics I', grade: 'O' },
+          { name: 'Physics', grade: 'O' },
           { name: 'Programming in C', grade: 'A+' },
           { name: 'Engineering Graphics', grade: 'A' },
-          { name: 'EVS', grade: 'A' },
-        ],
-        arrears: [],
+          { name: 'EVS', grade: 'O' }
+        ]
       },
       {
         sem: 'Semester 2',
         subjects: [
           { name: 'Mathematics II', grade: 'A+' },
-          { name: 'Chemistry', grade: 'A' },
+          { name: 'Chemistry', grade: 'O' },
           { name: 'Data Structures', grade: 'A+' },
           { name: 'Digital Logic', grade: 'A' },
-          { name: 'Python Programming', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 3',
-        subjects: [
-          { name: 'Mathematics III', grade: 'A' },
-          { name: 'Java Programming', grade: 'A+' },
-          { name: 'Database Systems', grade: 'A+' },
-          { name: 'Computer Architecture', grade: 'A' },
-          { name: 'Operating Systems', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 4',
-        subjects: [
-          { name: 'Design and Analysis of Algorithms', grade: 'A+' },
-          { name: 'Computer Networks', grade: 'A+' },
-          { name: 'Web Technology', grade: 'A+' },
-          { name: 'Software Engineering', grade: 'A' },
-          { name: 'Discrete Mathematics', grade: 'A' },
-        ],
-        arrears: [],
-      },
-      {
-        sem: 'Semester 5',
-        subjects: [
-          { name: 'Machine Learning', grade: 'A+' },
-          { name: 'Compiler Design', grade: 'A+' },
-          { name: 'Cloud Computing', grade: 'A' },
-          { name: 'Professional Ethics', grade: 'A' },
-          { name: 'Mobile App Development', grade: 'A+' },
-        ],
-        arrears: [],
-      },
-    ],
-  },
+          { name: 'Python Programming', grade: 'O' }
+        ]
+      }
+    ]
+  }
 ];
 
 const SemesterResults = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   return (
-    <Box
-      sx={{
-        minHeight: 'calc(100vh - 130px)',
-        p: 4,
-        backgroundColor: '#f8f9fa',
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-    >
-      <Paper sx={{ p: 4, width: '100%', maxWidth: 1200 }}>
-        {!selectedStudent ? (
-          <>
-            <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
-              Select a Student to View Semester Results
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Semester Results
+      </Typography>
+
+      {/* Student selection */}
+      <Grid container spacing={2} sx={{ mb: 4 }}>
+        {students.map((student, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 2,
+                backgroundColor: selectedStudent?.roll === student.roll ? '#bbdefb' : '#e3f2fd',
+                cursor: 'pointer',
+                textAlign: 'center',
+              }}
+              onClick={() => setSelectedStudent(student)}
+            >
+              <Typography variant="h6" fontWeight="bold">
+                {student.name}
+              </Typography>
+              <Typography variant="body2">{student.roll}</Typography>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Student results */}
+      {selectedStudent && (
+        <Box>
+          <Typography variant="h5" gutterBottom>
+            {selectedStudent.name}'s Results
+          </Typography>
+
+          {/* CGPA Box */}
+          <Box sx={{ mb: 3, p: 2, backgroundColor: '#e3f2fd', borderRadius: 1 }}>
+            <Typography variant="h6" fontWeight="bold">
+              Overall CGPA: {calculateCGPA(selectedStudent.results)}
             </Typography>
-            <Grid container spacing={3} justifyContent="center">
-              {students.map((student, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Paper
-                    elevation={3}
-                    sx={{
-                      p: 3,
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      backgroundColor: '#e3f2fd',
-                      '&:hover': {
-                        backgroundColor: '#bbdefb',
-                      },
-                    }}
-                    onClick={() => setSelectedStudent(student)}
-                  >
-                    <Typography variant="h6">{student.name}</Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Roll No: {student.roll}
-                    </Typography>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        ) : (
-          <>
-            <Box sx={{ mb: 2 }}>
-              <Button variant="outlined" onClick={() => setSelectedStudent(null)}>
-                ← Back to Students List
-              </Button>
-            </Box>
-            <Typography variant="h5" gutterBottom>
-              {selectedStudent.name} - {selectedStudent.roll}
-            </Typography>
-            {selectedStudent.results.map((sem, i) => (
-              <Box
-                key={i}
-                sx={{
-                  mt: 3,
-                  p: 3,
-                  border: '1px solid #ccc',
-                  borderRadius: 2,
-                  backgroundColor: '#fafafa',
-                }}
-              >
-                <Typography variant="h6" gutterBottom>
-                  {sem.sem}
+          </Box>
+
+          {selectedStudent.results.map((sem, semIndex) => (
+            <Paper key={semIndex} elevation={2} sx={{ p: 2, mb: 3 }}>
+              <Typography variant="h6" gutterBottom>{sem.sem}</Typography>
+              <Divider sx={{ mb: 1 }} />
+              <Grid container spacing={2}>
+                {sem.subjects.map((subject, idx) => (
+                  <Grid item xs={12} sm={6} md={4} key={idx}>
+                    <Paper sx={{ p: 2, backgroundColor: '#f1f8e9' }}>
+                      <Typography fontWeight="bold">{subject.name}</Typography>
+                      <Typography>Grade: {subject.grade}</Typography>
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
+              {/* SGPA for this semester */}
+              <Box sx={{ mt: 2, p: 2, backgroundColor: '#e3f2fd', borderRadius: 1 }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Semester GPA: {calculateSGPA(sem.subjects)}
                 </Typography>
-                <Divider />
-                <Grid container spacing={2} mt={1}>
-                  {sem.subjects.map((subject, idx) => (
-                    <Grid item xs={12} sm={6} md={4} key={idx}>
-                      <Paper sx={{ p: 2, backgroundColor: '#fff' }}>
-                        <Typography variant="subtitle1" fontWeight="bold">
-                          {subject.name}
-                        </Typography>
-                        <Typography variant="body2">Grade: {subject.grade}</Typography>
-                      </Paper>
-                    </Grid>
-                  ))}
-                </Grid>
-                {sem.arrears.length > 0 && (
-                  <Box mt={2} sx={{ color: 'red' }}>
-                    <Typography variant="subtitle2" fontWeight="bold">
-                      Arrears:
-                    </Typography>
-                    <ul style={{ margin: 0 }}>
-                      {sem.arrears.map((sub, idx) => (
-                        <li key={idx}>{sub}</li>
-                      ))}
-                    </ul>
-                  </Box>
-                )}
               </Box>
-            ))}
-          </>
-        )}
-      </Paper>
-    </Box>
+            </Paper>
+          ))}
+        </Box>
+      )}
+    </Container>
   );
 };
 
