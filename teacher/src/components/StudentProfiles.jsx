@@ -6,8 +6,10 @@ import {
   Avatar,
   Button,
   Container,
+  Grid,
+  alpha,
+  useTheme
 } from '@mui/material';
-import { Grid } from '@mui/material';
 import axios from 'axios';
 import {
   BarChart,
@@ -21,6 +23,7 @@ import {
 } from 'recharts';
 
 const StudentProfiles = () => {
+  const theme = useTheme();
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
@@ -37,7 +40,6 @@ const StudentProfiles = () => {
     axios
       .get('http://localhost:5000/api/students')
       .then((response) => {
-        // Add attendance data to each student
         const studentsWithAttendance = response.data.map(student => ({
           ...student,
           attendance: sampleAttendance
@@ -56,126 +58,215 @@ const StudentProfiles = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Typography 
+        variant="h4" 
+        fontWeight="bold" 
+        gutterBottom
+        sx={{
+          color: theme.palette.primary.main,
+          mb: 4,
+          textAlign: 'center',
+          position: 'relative',
+          '&:after': {
+            content: '""',
+            display: 'block',
+            width: '80px',
+            height: '4px',
+            background: theme.palette.primary.main,
+            margin: '16px auto 0',
+            borderRadius: '2px'
+          }
+        }}
+      >
         Student Profiles
       </Typography>
 
       {!selectedStudent ? (
-        <Grid container spacing={3}>
+        <Grid container spacing={3} justifyContent="center">
           {students.map((student, index) => (
-            <Grid key={index} sx={{ 
-              width: { xs: '100%', sm: '50%', md: '25%' },
-              display: 'inline-block',
-              p: 1
-            }}>
+            <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
               <Paper
                 elevation={3}
                 sx={{
-                  p: 2,
+                  p: 3,
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  transition: 'transform 0.2s ease-in-out',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  borderRadius: '12px',
+                  border: `1px solid ${alpha(theme.palette.primary.light, 0.2)}`,
                   '&:hover': {
-                    transform: 'scale(1.02)',
+                    transform: 'translateY(-5px)',
+                    boxShadow: theme.shadows[6],
                   },
                 }}
               >
                 <Avatar
                   src={student.img}
                   alt={student.name}
-                  sx={{ width: 70, height: 70, mb: 2 }}
+                  sx={{ 
+                    width: 100, 
+                    height: 100, 
+                    mb: 2,
+                    border: `3px solid ${theme.palette.primary.main}`,
+                  }}
                 />
-                <Typography variant="subtitle1" fontWeight="bold" align="center">
+                <Typography 
+                  variant="h6" 
+                  fontWeight={600} 
+                  align="center"
+                  color="text.primary"
+                >
                   {student.name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" align="center">
+                <Typography 
+                  variant="subtitle1" 
+                  color="text.secondary" 
+                  align="center"
+                  sx={{ mb: 2 }}
+                >
                   {student.roll}
                 </Typography>
                 <Button
-                  variant="contained"
-                  size="small"
-                  sx={{ mt: 2 }}
+                  variant="outlined"
+                  size="medium"
+                  color="primary"
+                  sx={{
+                    mt: 'auto',
+                    fontWeight: 600,
+                    px: 3,
+                    '&:hover': {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                    }
+                  }}
                   onClick={() => handleViewProfile(student)}
                 >
-                  View Profile
+                  View Details
                 </Button>
               </Paper>
             </Grid>
           ))}
         </Grid>
       ) : (
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Button variant="outlined" onClick={handleBack} sx={{ mb: 2 }}>
-            ← Back to all students
+        <Paper 
+          elevation={0}
+          sx={{ 
+            p: 4,
+            borderRadius: '12px',
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.shadows[2],
+            border: `1px solid ${theme.palette.divider}`
+          }}
+        >
+          <Button 
+            variant="text"
+            startIcon={<span>←</span>}
+            onClick={handleBack}
+            sx={{
+              mb: 3,
+              color: theme.palette.primary.main,
+              fontWeight: 600,
+              '&:hover': {
+                backgroundColor: alpha(theme.palette.primary.main, 0.08),
+              }
+            }}
+          >
+            Back to Students
           </Button>
 
-          <Box display="flex" alignItems="center" gap={4} flexWrap="wrap">
+          <Box 
+            display="flex" 
+            flexDirection={{ xs: 'column', md: 'row' }}
+            alignItems={{ xs: 'center', md: 'flex-start' }}
+            gap={4}
+            sx={{
+              p: 3,
+              borderRadius: '8px',
+              backgroundColor: alpha(theme.palette.primary.light, 0.05),
+              border: `1px solid ${alpha(theme.palette.primary.light, 0.2)}`,
+              mb: 4
+            }}
+          >
             <Avatar
               src={selectedStudent.img}
               alt={selectedStudent.name}
-              sx={{ width: 100, height: 100 }}
+              sx={{ 
+                width: 120, 
+                height: 120,
+                border: `4px solid ${theme.palette.primary.main}`,
+              }}
             />
-            <Box>
-              <Typography variant="h6">{selectedStudent.name}</Typography>
-              <Typography>Roll No: {selectedStudent.roll}</Typography>
-              <Typography>Email: {selectedStudent.email}</Typography>
-              <Typography>Phone: {selectedStudent.phone}</Typography>
-              <Typography>DOB: {selectedStudent.dob}</Typography>
-              <Typography>Department: {selectedStudent.department}</Typography>
-              <Typography>Place of Birth: {selectedStudent.placeOfBirth}</Typography>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h5" fontWeight={700} gutterBottom>
+                {selectedStudent.name}
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>Roll No:</strong> {selectedStudent.roll}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Email:</strong> {selectedStudent.email}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Phone:</strong> {selectedStudent.phone}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>DOB:</strong> {selectedStudent.dob}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Department:</strong> {selectedStudent.department}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Place of Birth:</strong> {selectedStudent.placeOfBirth}
+                  </Typography>
+                </Grid>
+              </Grid>
             </Box>
           </Box>
 
           {selectedStudent.attendance && (
-            <Box mt={5}>
-              <Typography variant="h6" gutterBottom>
-                Subject-wise Attendance
+            <Box>
+              <Typography 
+                variant="h6" 
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                  color: theme.palette.text.primary,
+                  mb: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  '&:before': {
+                    content: '""',
+                    display: 'inline-block',
+                    width: '4px',
+                    height: '20px',
+                    backgroundColor: theme.palette.primary.main,
+                    marginRight: '12px',
+                    borderRadius: '2px'
+                  }
+                }}
+              >
+                Attendance Summary
               </Typography>
-              <Box sx={{ width: '100%', height: 400 }}>
+              
+              <Box sx={{ height: 400, mt: 2 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={selectedStudent.attendance}
-                    layout="vertical"
-                    margin={{
-                      top: 20,
-                      right: 50,
-                      left: 120,
-                      bottom: 20,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      type="number" 
-                      domain={[0, 100]}
-                      tickCount={6}
-                      label={{ value: 'Attendance %', position: 'bottom', offset: 0 }}
-                    />
-                    <YAxis
-                      dataKey="subject"
-                      type="category"
-                      tick={{ fontSize: 12 }}
-                      width={100}
-                    />
-                    <Tooltip 
-                      formatter={(value) => [`${value}%`, 'Attendance']}
-                      cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
-                    />
-                    <Legend verticalAlign="top" height={36} />
-                    <Bar
-                      dataKey="percentage"
-                      fill="#2196f3"
+                  <BarChart data={selectedStudent.attendance}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+                    <XAxis dataKey="subject" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar 
+                      dataKey="percentage" 
+                      fill={theme.palette.primary.main} 
                       name="Attendance %"
-                      barSize={30}
-                      radius={[0, 4, 4, 0]}
-                      label={{ 
-                        position: 'right',
-                        formatter: (value) => `${value}%`,
-                        fill: '#666',
-                        fontSize: 12
-                      }}
+                      radius={[4, 4, 0, 0]}
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -183,16 +274,19 @@ const StudentProfiles = () => {
 
               {selectedStudent.attendance.some(sub => sub.percentage < 75) && (
                 <Box 
-                  mt={2} 
+                  mt={3} 
                   p={2} 
                   sx={{ 
-                    backgroundColor: '#ffebee',
-                    borderRadius: 1,
-                    border: '1px solid #ef5350'
+                    backgroundColor: alpha(theme.palette.error.light, 0.1),
+                    borderRadius: '8px',
+                    border: `1px solid ${theme.palette.error.light}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
                   }}
                 >
-                  <Typography color="error" fontWeight="bold">
-                    ⚠ Alert: One or more subjects have attendance below 75%!
+                  <Typography color="error" fontWeight={600}>
+                    ⚠ Attendance Warning: Below 75% in some subjects
                   </Typography>
                 </Box>
               )}

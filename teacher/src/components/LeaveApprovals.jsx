@@ -12,6 +12,7 @@ import {
   Link,
   Button,
   Stack,
+  Chip,
 } from '@mui/material';
 
 const initialLeaveData = [
@@ -65,14 +66,14 @@ const LeaveApprovals = () => {
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
-        Leave Approvals
+        📝 Leave Approvals
       </Typography>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 2 }}>
         <Table>
-          <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
+          <TableHead sx={{ backgroundColor: '#e3f2fd' }}>
             <TableRow>
-              <TableCell><b>S.No</b></TableCell>
+              <TableCell align="center"><b>S.No</b></TableCell>
               <TableCell><b>Name</b></TableCell>
               <TableCell><b>Roll No</b></TableCell>
               <TableCell><b>Date</b></TableCell>
@@ -80,18 +81,31 @@ const LeaveApprovals = () => {
               <TableCell><b>Type</b></TableCell>
               <TableCell><b>Proof</b></TableCell>
               <TableCell><b>Status</b></TableCell>
-              <TableCell><b>Action</b></TableCell>
+              <TableCell align="center"><b>Action</b></TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {leaveData.map((data, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
+              <TableRow
+                key={index}
+                sx={{
+                  backgroundColor: index % 2 === 0 ? '#f9fbe7' : '#ffffff',
+                  '&:hover': { backgroundColor: '#f1f8e9' },
+                }}
+              >
+                <TableCell align="center">{index + 1}</TableCell>
                 <TableCell>{data.name}</TableCell>
                 <TableCell>{data.roll}</TableCell>
                 <TableCell>{data.date}</TableCell>
                 <TableCell>{data.reason}</TableCell>
-                <TableCell>{data.type}</TableCell>
+                <TableCell>
+                  <Chip
+                    label={data.type}
+                    color={data.type === 'ML' ? 'warning' : 'info'}
+                    size="small"
+                  />
+                </TableCell>
                 <TableCell>
                   {data.proof ? (
                     <Link href={`/${data.proof}`} target="_blank" rel="noopener">
@@ -101,59 +115,35 @@ const LeaveApprovals = () => {
                 </TableCell>
                 <TableCell>
                   {data.status ? (
-                    <Typography
-                      color={data.status === 'Approved' ? 'green' : 'red'}
-                      fontWeight="bold"
-                    >
-                      {data.status}
-                    </Typography>
-                  ) : 'Pending'}
+                    <Chip
+                      label={data.status}
+                      color={data.status === 'Approved' ? 'success' : 'error'}
+                      size="small"
+                    />
+                  ) : (
+                    <Chip label="Pending" color="default" size="small" />
+                  )}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   <Stack direction="column" spacing={1}>
-                    {data.type === 'ML' ? (
-                      <>
-                        <Button
-                          variant="contained"
-                          color="success"
-                          size="small"
-                          disabled={data.status === 'Approved'}
-                          onClick={() => handleAction(index, 'Approved')}
-                        >
-                          Approve ML
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          size="small"
-                          disabled={data.status === 'Rejected'}
-                          onClick={() => handleAction(index, 'Rejected')}
-                        >
-                          Reject ML
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          variant="contained"
-                          color="success"
-                          size="small"
-                          disabled={data.status === 'Approved'}
-                          onClick={() => handleAction(index, 'Approved')}
-                        >
-                          Approve OD
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          size="small"
-                          disabled={data.status === 'Rejected'}
-                          onClick={() => handleAction(index, 'Rejected')}
-                        >
-                          Reject OD
-                        </Button>
-                      </>
-                    )}
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      disabled={data.status === 'Approved'}
+                      onClick={() => handleAction(index, 'Approved')}
+                    >
+                      Approve {data.type}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      size="small"
+                      disabled={data.status === 'Rejected'}
+                      onClick={() => handleAction(index, 'Rejected')}
+                    >
+                      Reject {data.type}
+                    </Button>
                   </Stack>
                 </TableCell>
               </TableRow>
