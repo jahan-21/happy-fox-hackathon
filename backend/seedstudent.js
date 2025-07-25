@@ -17,7 +17,7 @@ const students = [
     attendance: [
       { subject: 'Maths', percentage: 85 },
       { subject: 'DBMS', percentage: 92 },
-      { subject: 'OS', percentage: 78 },
+      { subject: 'OS', percentage: 70 },
       { subject: 'CN', percentage: 68 },
       { subject: 'SE', percentage: 88 },
     ],
