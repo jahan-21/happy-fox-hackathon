@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/happyfox', {
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/happyfox', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -14,9 +14,10 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
+
 const students = [
   {
-    name: 'Aarav Sharma',
+    name: ' Jahan',
     roll: '21IT101',
     img: 'https://randomuser.me/api/portraits/men/1.jpg',
     dob: '2003-01-15',
@@ -25,15 +26,15 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Mumbai',
     attendance: [
-      { subject: 'Maths', percentage: 85 },
-      { subject: 'DBMS', percentage: 92 },
-      { subject: 'OS', percentage: 78 },
-      { subject: 'CN', percentage: 68 },
-      { subject: 'SE', percentage: 88 },
+      { subject: 'Mathematics', percentage: 85 },
+      { subject: 'Physics', percentage: 92 },
+      { subject: 'Programming', percentage: 78 },
+      { subject: 'Digital Logic', percentage: 68 },
+      { subject: 'Data Structures', percentage: 88 },
     ],
   },
   {
-    name: 'Kavya Iyer',
+    name: ' Avinya',
     roll: '21IT102',
     img: 'https://randomuser.me/api/portraits/women/2.jpg',
     dob: '2003-02-20',
@@ -42,11 +43,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Chennai',
     attendance: [
-      { subject: 'Maths', percentage: 90 },
-      { subject: 'DBMS', percentage: 88 },
-      { subject: 'OS', percentage: 72 },
-      { subject: 'CN', percentage: 79 },
-      { subject: 'SE', percentage: 95 },
+      { subject: 'Mathematics', percentage: 90 },
+      { subject: 'Physics', percentage: 88 },
+      { subject: 'Programming', percentage: 72 },
+      { subject: 'Digital Logic', percentage: 79 },
+      { subject: 'Data Structures', percentage: 95 },
     ],
   },
   {
@@ -59,15 +60,15 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Delhi',
     attendance: [
-      { subject: 'Maths', percentage: 65 },
-      { subject: 'DBMS', percentage: 80 },
-      { subject: 'OS', percentage: 72 },
-      { subject: 'CN', percentage: 74 },
-      { subject: 'SE', percentage: 90 },
+      { subject: 'Mathematics', percentage: 65 },
+      { subject: 'Physics', percentage: 80 },
+      { subject: 'Programming', percentage: 72 },
+      { subject: 'Digital Logic', percentage: 74 },
+      { subject: 'Data Structures', percentage: 90 },
     ],
   },
   {
-    name: 'Sneha Nair',
+    name: ' Abinaya M',
     roll: '21IT104',
     img: 'https://randomuser.me/api/portraits/women/4.jpg',
     dob: '2003-04-25',
@@ -76,11 +77,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Kochi',
     attendance: [
-      { subject: 'Maths', percentage: 92 },
-      { subject: 'DBMS', percentage: 85 },
-      { subject: 'OS', percentage: 95 },
-      { subject: 'CN', percentage: 91 },
-      { subject: 'SE', percentage: 88 },
+      { subject: 'Mathematics', percentage: 92 },
+      { subject: 'Physics', percentage: 85 },
+      { subject: 'Programming', percentage: 95 },
+      { subject: 'Digital Logic', percentage: 91 },
+      { subject: 'Data Structures', percentage: 88 },
     ],
   },
   {
@@ -93,11 +94,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Ahmedabad',
     attendance: [
-      { subject: 'Maths', percentage: 78 },
-      { subject: 'DBMS', percentage: 82 },
-      { subject: 'OS', percentage: 88 },
-      { subject: 'CN', percentage: 93 },
-      { subject: 'SE', percentage: 70 },
+      { subject: 'Mathematics', percentage: 78 },
+      { subject: 'Physics', percentage: 82 },
+      { subject: 'Programming', percentage: 88 },
+      { subject: 'Digital Logic', percentage: 93 },
+      { subject: 'Data Structures', percentage: 70 },
     ],
   },
   {
@@ -110,11 +111,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Bangalore',
     attendance: [
-      { subject: 'Maths', percentage: 89 },
-      { subject: 'DBMS', percentage: 67 },
-      { subject: 'OS', percentage: 72 },
-      { subject: 'CN', percentage: 94 },
-      { subject: 'SE', percentage: 91 },
+      { subject: 'Mathematics', percentage: 89 },
+      { subject: 'Physics', percentage: 67 },
+      { subject: 'Programming', percentage: 72 },
+      { subject: 'Digital Logic', percentage: 94 },
+      { subject: 'Data Structures', percentage: 91 },
     ],
   },
   {
@@ -127,11 +128,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Pune',
     attendance: [
-      { subject: 'Maths', percentage: 73 },
-      { subject: 'DBMS', percentage: 76 },
-      { subject: 'OS', percentage: 70 },
-      { subject: 'CN', percentage: 60 },
-      { subject: 'SE', percentage: 85 },
+      { subject: 'Mathematics', percentage: 73 },
+      { subject: 'Physics', percentage: 76 },
+      { subject: 'Programming', percentage: 70 },
+      { subject: 'Digital Logic', percentage: 60 },
+      { subject: 'Data Structures', percentage: 85 },
     ],
   },
   {
@@ -144,11 +145,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Nagpur',
     attendance: [
-      { subject: 'Maths', percentage: 95 },
-      { subject: 'DBMS', percentage: 91 },
-      { subject: 'OS', percentage: 96 },
-      { subject: 'CN', percentage: 89 },
-      { subject: 'SE', percentage: 94 },
+      { subject: 'Mathematics', percentage: 95 },
+      { subject: 'Physics', percentage: 91 },
+      { subject: 'Programming', percentage: 96 },
+      { subject: 'Digital Logic', percentage: 89 },
+      { subject: 'Data Structures', percentage: 94 },
     ],
   },
   {
@@ -161,11 +162,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Jaipur',
     attendance: [
-      { subject: 'Maths', percentage: 82 },
-      { subject: 'DBMS', percentage: 77 },
-      { subject: 'OS', percentage: 79 },
-      { subject: 'CN', percentage: 64 },
-      { subject: 'SE', percentage: 87 },
+      { subject: 'Mathematics', percentage: 82 },
+      { subject: 'Physics', percentage: 77 },
+      { subject: 'Programming', percentage: 79 },
+      { subject: 'Digital Logic', percentage: 64 },
+      { subject: 'Data Structures', percentage: 87 },
     ],
   },
   {
@@ -178,11 +179,11 @@ const students = [
     department: 'Information Technology',
     placeOfBirth: 'Kolkata',
     attendance: [
-      { subject: 'Maths', percentage: 74 },
-      { subject: 'DBMS', percentage: 81 },
-      { subject: 'OS', percentage: 69 },
-      { subject: 'CN', percentage: 88 },
-      { subject: 'SE', percentage: 75 },
+      { subject: 'Mathematics', percentage: 74 },
+      { subject: 'Physics', percentage: 81 },
+      { subject: 'Programming', percentage: 69 },
+      { subject: 'Digital Logic', percentage: 88 },
+      { subject: 'Data Structures', percentage: 75 },
     ],
   },
 ];
@@ -213,3 +214,5 @@ const seedDatabase = async () => {
     console.log('Disconnected from DB');
   }
 };
+
+seedDatabase();
