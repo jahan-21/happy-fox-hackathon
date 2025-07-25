@@ -1,11 +1,19 @@
 const mongoose = require('mongoose');
 const Student = require('../models/student');
+require('dotenv').config();
 
-mongoose.connect('mongodb://127.0.0.1:27017/happyfox', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/happyfox', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB Connected...');
+  } catch (err) {
+    console.error('Database connection error:', err);
+    process.exit(1);
+  }
+};
 const students = [
   {
     name: 'Aarav Sharma',
@@ -16,6 +24,13 @@ const students = [
     phone: '9876543210',
     department: 'Information Technology',
     placeOfBirth: 'Mumbai',
+    attendance: [
+      { subject: 'Maths', percentage: 85 },
+      { subject: 'DBMS', percentage: 92 },
+      { subject: 'OS', percentage: 78 },
+      { subject: 'CN', percentage: 68 },
+      { subject: 'SE', percentage: 88 },
+    ],
   },
   {
     name: 'Kavya Iyer',
@@ -26,6 +41,13 @@ const students = [
     phone: '9876543211',
     department: 'Information Technology',
     placeOfBirth: 'Chennai',
+    attendance: [
+      { subject: 'Maths', percentage: 90 },
+      { subject: 'DBMS', percentage: 88 },
+      { subject: 'OS', percentage: 72 },
+      { subject: 'CN', percentage: 79 },
+      { subject: 'SE', percentage: 95 },
+    ],
   },
   {
     name: 'Rohan Verma',
@@ -36,6 +58,13 @@ const students = [
     phone: '9876543212',
     department: 'Information Technology',
     placeOfBirth: 'Delhi',
+    attendance: [
+      { subject: 'Maths', percentage: 65 },
+      { subject: 'DBMS', percentage: 80 },
+      { subject: 'OS', percentage: 72 },
+      { subject: 'CN', percentage: 74 },
+      { subject: 'SE', percentage: 90 },
+    ],
   },
   {
     name: 'Sneha Nair',
@@ -46,6 +75,13 @@ const students = [
     phone: '9876543213',
     department: 'Information Technology',
     placeOfBirth: 'Kochi',
+    attendance: [
+      { subject: 'Maths', percentage: 92 },
+      { subject: 'DBMS', percentage: 85 },
+      { subject: 'OS', percentage: 95 },
+      { subject: 'CN', percentage: 91 },
+      { subject: 'SE', percentage: 88 },
+    ],
   },
   {
     name: 'Rahul Mehta',
@@ -56,6 +92,13 @@ const students = [
     phone: '9876543214',
     department: 'Information Technology',
     placeOfBirth: 'Ahmedabad',
+    attendance: [
+      { subject: 'Maths', percentage: 78 },
+      { subject: 'DBMS', percentage: 82 },
+      { subject: 'OS', percentage: 88 },
+      { subject: 'CN', percentage: 93 },
+      { subject: 'SE', percentage: 70 },
+    ],
   },
   {
     name: 'Ishita Rao',
@@ -66,6 +109,13 @@ const students = [
     phone: '9876543215',
     department: 'Information Technology',
     placeOfBirth: 'Bangalore',
+    attendance: [
+      { subject: 'Maths', percentage: 89 },
+      { subject: 'DBMS', percentage: 67 },
+      { subject: 'OS', percentage: 72 },
+      { subject: 'CN', percentage: 94 },
+      { subject: 'SE', percentage: 91 },
+    ],
   },
   {
     name: 'Aditya Desai',
@@ -76,6 +126,13 @@ const students = [
     phone: '9876543216',
     department: 'Information Technology',
     placeOfBirth: 'Pune',
+    attendance: [
+      { subject: 'Maths', percentage: 73 },
+      { subject: 'DBMS', percentage: 76 },
+      { subject: 'OS', percentage: 70 },
+      { subject: 'CN', percentage: 60 },
+      { subject: 'SE', percentage: 85 },
+    ],
   },
   {
     name: 'Neha Patil',
@@ -86,6 +143,13 @@ const students = [
     phone: '9876543217',
     department: 'Information Technology',
     placeOfBirth: 'Nagpur',
+    attendance: [
+      { subject: 'Maths', percentage: 95 },
+      { subject: 'DBMS', percentage: 91 },
+      { subject: 'OS', percentage: 96 },
+      { subject: 'CN', percentage: 89 },
+      { subject: 'SE', percentage: 94 },
+    ],
   },
   {
     name: 'Yash Gupta',
@@ -96,6 +160,13 @@ const students = [
     phone: '9876543218',
     department: 'Information Technology',
     placeOfBirth: 'Jaipur',
+    attendance: [
+      { subject: 'Maths', percentage: 82 },
+      { subject: 'DBMS', percentage: 77 },
+      { subject: 'OS', percentage: 79 },
+      { subject: 'CN', percentage: 64 },
+      { subject: 'SE', percentage: 87 },
+    ],
   },
   {
     name: 'Ananya Sen',
@@ -106,12 +177,39 @@ const students = [
     phone: '9876543219',
     department: 'Information Technology',
     placeOfBirth: 'Kolkata',
+    attendance: [
+      { subject: 'Maths', percentage: 74 },
+      { subject: 'DBMS', percentage: 81 },
+      { subject: 'OS', percentage: 69 },
+      { subject: 'CN', percentage: 88 },
+      { subject: 'SE', percentage: 75 },
+    ],
   },
 ];
 
-Student.insertMany(students)
-  .then(() => {
-    console.log('All students inserted');
+const seedDatabase = async () => {
+  try {
+    await connectDB();
+    
+    // Clear existing data
+    await Student.deleteMany();
+    console.log('Existing data cleared');
+    
+    // Insert new data
+    const insertedStudents = await Student.insertMany(students);
+    console.log(`${insertedStudents.length} students inserted`);
+    
+    // Verify data
+    const count = await Student.countDocuments();
+    console.log(`Total students in DB: ${count}`);
+    
+    // Check first student's attendance
+    const sampleStudent = await Student.findOne();
+    console.log('Sample student attendance:', sampleStudent.attendance);
+  } catch (err) {
+    console.error('Seeding error:', err);
+  } finally {
     mongoose.disconnect();
-  })
-  .catch((err) => console.error('Error inserting:', err));
+    console.log('Disconnected from DB');
+  }
+};

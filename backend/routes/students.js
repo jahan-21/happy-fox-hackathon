@@ -1,26 +1,20 @@
-// routes/students.js
 const express = require('express');
 const router = express.Router();
 const Student = require('../models/student');
 
-// Insert multiple students
-router.post('/insert', async (req, res) => {
-  try {
-    const data = req.body;
-    await Student.insertMany(data);
-    res.status(200).json({ message: 'Students inserted' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get all students
+// Get all students with attendance data
 router.get('/', async (req, res) => {
   try {
-    const students = await Student.find();
-    res.json(students);
+    const students = await Student.find().lean();
+    // Transform data to ensure consistent structure
+    const transformedStudents = students.map(student => ({
+      ...student,
+      attendance: student.attendance || [] // Ensure attendance array exists
+    }));
+    res.json(transformedStudents);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error fetching students:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
