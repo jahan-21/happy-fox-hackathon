@@ -26,27 +26,19 @@ const StudentProfiles = () => {
   const theme = useTheme();
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
-
-  // Sample attendance data
-  const sampleAttendance = [
-    { subject: 'Mathematics', percentage: 85 },
-    { subject: 'Physics', percentage: 92 },
-    { subject: 'Programming', percentage: 78 },
-    { subject: 'Digital Logic', percentage: 88 },
-    { subject: 'Data Structures', percentage: 95 }
-  ];
+  const [error, setError] = useState('');
 
   useEffect(() => {
     axios
       .get('http://localhost:5000/api/students')
       .then((response) => {
-        const studentsWithAttendance = response.data.map(student => ({
-          ...student,
-          attendance: sampleAttendance
-        }));
-        setStudents(studentsWithAttendance);
+        setStudents(response.data);
+        setError('');
       })
-      .catch((error) => console.error('Error fetching students:', error));
+      .catch((error) => {
+        console.error('Error fetching students:', error);
+        setError('Failed to load student data. Please try again later.');
+      });
   }, []);
 
   const handleViewProfile = (student) => {
@@ -81,6 +73,19 @@ const StudentProfiles = () => {
       >
         Student Profiles
       </Typography>
+
+      {error && (
+        <Box sx={{ 
+          backgroundColor: theme.palette.error.light, 
+          color: theme.palette.error.contrastText,
+          p: 2,
+          mb: 3,
+          borderRadius: 1,
+          textAlign: 'center'
+        }}>
+          {error}
+        </Box>
+      )}
 
       {!selectedStudent ? (
         <Grid container spacing={3} justifyContent="center">
@@ -229,7 +234,7 @@ const StudentProfiles = () => {
             </Box>
           </Box>
 
-          {selectedStudent.attendance && (
+          {selectedStudent.attendance && selectedStudent.attendance.length > 0 ? (
             <Box>
               <Typography 
                 variant="h6" 
@@ -259,8 +264,8 @@ const StudentProfiles = () => {
                   <BarChart data={selectedStudent.attendance}>
                     <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                     <XAxis dataKey="subject" />
-                    <YAxis />
-                    <Tooltip />
+                    <YAxis domain={[0, 100]} />
+                    <Tooltip formatter={(value) => [`${value}%`, 'Attendance']} />
                     <Legend />
                     <Bar 
                       dataKey="percentage" 
@@ -290,6 +295,17 @@ const StudentProfiles = () => {
                   </Typography>
                 </Box>
               )}
+            </Box>
+          ) : (
+            <Box sx={{ 
+              backgroundColor: theme.palette.warning.light,
+              p: 2,
+              borderRadius: 1,
+              textAlign: 'center'
+            }}>
+              <Typography color="text.secondary">
+                No attendance records available for this student
+              </Typography>
             </Box>
           )}
         </Paper>
